@@ -6,7 +6,7 @@ export default ['$stateProvider', '$urlRouterProvider', '$locationProvider', ($s
     // Define prefix
     $locationProvider.hashPrefix('!');
     // For each url not found redirection to '/'
-    $urlRouterProvider.otherwise('/posts/:error');
+    $urlRouterProvider.otherwise('/posts/');
     /*
     Define a state with name 'app' this state is abstract and url is empty (root of application)
     template is ui-view it's used to display nested views
@@ -34,20 +34,24 @@ export default ['$stateProvider', '$urlRouterProvider', '$locationProvider', ($s
     
     .state('algo1', {
         url: '/algo1',
-        template: '<navbar /><div class="container">{{result}}</div>',
+        template: '<navbar /><div class="container"><div class="row"><h2>My Friends</h2><div class="col s12 m6"><div class="card blue-grey darken-1" ng-repeat="friend in friends"><div class="card-content white-text"><span class="card-title">{{friend}}</span><p></div></div></div></div>',
         controller: ['$scope',function($scope) {
             
-            $scope.friends = () => {
-                var people = ["Ryan", "Jimmy", "123", "4", "Cool Man"];
-                 $scope.result = ["Ryan", "Jimmy", "123", "4", "Cool Man"];
-                for (let i = 0; i < people.length; i++) {
-                    if (people[i].length >= 4) {
-                        $scope.result = people[i]
+            var init = () => {
+                
+                for (let i = 0; i < $scope.peoples.length; i++) {
+                    if ($scope.peoples[i].length === 4) {
+                        $scope.friends.push($scope.peoples[i])
                     }
                 }
                 return;
             }
-            console.log($scope.result)
+            $scope.peoples = ["Ryan", "Jimmy","jojo", "123", "4", "Cool Man"];
+            $scope.friends = [];
+            init();
+
+            
+            console.log($scope)
         }]        
     })
 }]
