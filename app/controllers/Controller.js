@@ -5,28 +5,47 @@ with mongoose (find, findById, Create, Update, Delete).
 'use strict'
 
 class Controller {
-
+    
     constructor(model) {
         this.model = model
     }
-
+    
     find(req, res, next) {
         // Get all documents and filter with queries string (req.query : ex. http://domain.ext/api/?query=string)
         this.model.find(req.query, (err, documents) => {
             res.json(documents)
         })
     }
-
+    
     findById(req, res, next) {
         // Get a unique document by request param, this param need to be id
         this.model.findById(req.params.id, (err, document) => {
             if (err)
-                next(err)
+            next(err)
             else
-                res.json(document)
+            res.json(document)
         })
     }
-
+    findPost(req, res, next) {
+        // Get a unique document by request param, this param need to be id
+        this.model.findOne({_id:req.params.id, published:true}, (err, document) => {
+            if (err)
+            next(err)
+            else
+            res.json(document)
+        })
+    }
+    
+    // findPosts(req, res, next) {
+    //     // Get a unique document by request param, this param need to be id
+    //     this.model.find({published:true}, (err, document) => {
+    //         if (err)
+    //         next(err)
+    //         else
+    //         res.json(document)
+    //     })
+    // }
+    
     create(req, res, next) {
         // Create a document with data from body request (req.body)
         this.model.create(req.body, (err, document) => {
@@ -38,7 +57,7 @@ class Controller {
             }
         })
     }
-
+    
     update(req, res, next) {
         // Update a document by request param, this param need to be id with data from body request (req.body)
         this.model.update({
@@ -51,7 +70,7 @@ class Controller {
             }
         })
     }
-
+    
     delete(req, res, next) {
         // Delete a unique document by request param, this param need to be id
         this.model.findByIdAndRemove(req.params.id, (err) => {

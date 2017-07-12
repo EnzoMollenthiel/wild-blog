@@ -5,9 +5,27 @@
     
         <!-- In general if it's not editable it's when this component is used in the blogList component -->
         <div class="card-content">
+            
             <!-- Display post.title if this component is not editable or editable and not in edit mode -->
+              <!-- Switch -->
+            <div class="switch" ng-if="$ctrl.user.isAdmin">
+                <label>
+                Off
+                <input type="checkbox" ng-model="$ctrl.post.published">
+                <span class="lever"></span>
+                On
+                </label>
+            </div>
             <span class="card-title" ng-if="(!$ctrl.editable || ($ctrl.editable && !$ctrl.editMode))">
               {{$ctrl.post.title}}
+            </span>
+            <span ng-if="(!$ctrl.editable || ($ctrl.editable && !$ctrl.editMode))">
+            <br>
+            Créer le : <br>{{$ctrl.post.createdAt | date: "dd/MM/yyyy à hh:mm"}}
+            <br>
+            Dernière mofication : <br>{{$ctrl.post.updatedAt | date: "dd/MM/yyyy à hh:mm"}}
+            <br>
+            <br>
             </span>
             <!-- Display input for editing post.title only if editable and in edit mode -->
             <input type="text" ng-if="($ctrl.editable && $ctrl.editMode)" ng-model="$ctrl.post.title" placeholder="Title">
@@ -20,6 +38,7 @@
         </div>
 
         <div class="card-action">
+            
             <!-- Display this link, only if it's not editable, to change state to blog.item with the post id -->
             <a ng-if="!$ctrl.editable" ui-sref="blog.item({id: $ctrl.post._id})">Read more</a>
             <!-- Display this link, only if it's editable and not in edit mode, to change state to app.blog.list (go back) -->

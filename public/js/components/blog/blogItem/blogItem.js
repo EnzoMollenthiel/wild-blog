@@ -12,7 +12,7 @@ let blogItem = {
     controller: ['UsersService', 'PostsService', '$stateParams', '$state', function(UsersService, PostsService, $stateParams, $state) {
         'use  strict'
         let initialPost;
-
+        
         // Call getCurrent() method from UsersService.
         // When this request receive response we affect response data to this controller variable user
         UsersService.getCurrent().then((user) => {
@@ -20,7 +20,7 @@ let blogItem = {
         }).catch((err) => {
             console.log(err)
         })
-
+        
         // Test if $stateParams.id exists (ex: stateParams.id is 1234567 form this url http://domain.ext/1234567)
         if ($stateParams.id) {
             // If $stateParams.id is _new (when you click on add on blogListMenu button see blogListMenu.html)
@@ -35,6 +35,13 @@ let blogItem = {
                 PostsService.getById($stateParams.id).then((res) => {
                     // when this request receives response we affect response data to this controller variable post
                     this.post = res.data;
+                    if(res.data === null) {
+                        $state.go('blog.list')
+                        let toastContent = `Article not published yet !`
+                        Materialize.toast(toastContent, 4000, 'toast-error')
+                        
+                    }
+                    
                     // save into initialPost a copy of this post (used for undo)
                     initialPost = angular.copy(this.post)
                 })
@@ -43,7 +50,7 @@ let blogItem = {
             //If $stateParams.id doesn't exist we change state to app.blog.list (redirection to list)
             $state.go('blog.list')
         }
-
+        
         // Create delete function.
         // If you want to use in view you can call with $ctrl.delete()
         this.delete = () => {
@@ -53,7 +60,7 @@ let blogItem = {
                 $state.go('blog.list')
             })
         }
-
+        
         // Create save function.
         // If you want to use in view you can call with $ctrl.save()
         this.save = () => {
@@ -67,7 +74,7 @@ let blogItem = {
                 }
             })
         }
-
+        
         // Create undo function.
         // If you want to use in view you can call with $ctrl.undo()
         this.undo = () => {
@@ -79,16 +86,16 @@ let blogItem = {
                 $state.go('blog.list')
             }
         }
-
+        
         this.isFav = () => {
             if (!this.post) return
             return (this.user.bookmarks.find((post_id) => post_id.id === this.post._id))
         }
-
+        
         this.addOrRemoveToBookmark = () => {
             // Try to find post in bookmarks
             let postFound = this.user.bookmarks.find((post) => post.id === this.post._id)
-
+            
             if (!postFound) {
                 //Not found
                 this.user.bookmarks.push(this.post._id)
@@ -98,7 +105,7 @@ let blogItem = {
                     return post_id !== this.post._id
                 })
             }
-
+            
             UsersService.update(this.user).then((res) => {
                 //return UsersService.setToken(res.data.token)
             }).then((user) => {
@@ -108,7 +115,6 @@ let blogItem = {
                 Materialize.toast(toastContent, 4000, 'toast-error')
             })
         }
-
     }]
 }
 
