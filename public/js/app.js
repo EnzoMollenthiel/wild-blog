@@ -27,5 +27,5 @@ angular.module('app', [
     services,
     common,
     login,
-    blog
+    blog, 
 ])
